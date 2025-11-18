@@ -14,12 +14,16 @@ const typeorm_1 = require("@nestjs/typeorm");
 const products_entity_1 = require("./products.entity");
 const cartItems_entity_1 = require("../cart/entities/cartItems.entity");
 const orderItems_entity_1 = require("../order/entities/orderItems.entity");
+const cloudinary_module_1 = require("../cloudinary/cloudinary.module");
 let ProductsModule = class ProductsModule {
 };
 exports.ProductsModule = ProductsModule;
 exports.ProductsModule = ProductsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([products_entity_1.Products, cartItems_entity_1.CartItems, orderItems_entity_1.OrderItems])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([products_entity_1.Products, cartItems_entity_1.CartItems, orderItems_entity_1.OrderItems]),
+            cloudinary_module_1.CloudinaryModule,
+        ],
         providers: [products_service_1.ProductsService],
         controllers: [products_controller_1.ProductsController],
     })

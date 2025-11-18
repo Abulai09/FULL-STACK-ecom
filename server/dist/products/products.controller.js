@@ -19,6 +19,7 @@ const JwtAuthGuard_1 = require("../guards/JwtAuthGuard");
 const RolesDecorator_1 = require("../guards/RolesDecorator");
 const prodDto_1 = require("./dto/prodDto");
 const RolesGuard_1 = require("../guards/RolesGuard");
+const platform_express_1 = require("@nestjs/platform-express");
 let ProductsController = class ProductsController {
     prodServ;
     constructor(prodServ) {
@@ -27,11 +28,11 @@ let ProductsController = class ProductsController {
     async getAllProducts(page = 1, limit = 3) {
         return await this.prodServ.pagination(page, limit);
     }
-    async create(dto) {
-        await this.prodServ.createProducr(dto);
+    async create(dto, file) {
+        return await this.prodServ.createProducr(dto, file);
     }
-    async getAll(minPrice, maxPrice, word) {
-        return await this.prodServ.getProducts(minPrice, maxPrice, word);
+    async getAll(minPrice, maxPrice, word, category) {
+        return await this.prodServ.getProducts(minPrice, maxPrice, word, category);
     }
     async del(id) {
         return await this.prodServ.delete(Number(id));
@@ -39,7 +40,7 @@ let ProductsController = class ProductsController {
 };
 exports.ProductsController = ProductsController;
 __decorate([
-    (0, common_1.Get)('products'),
+    (0, common_1.Get)('get'),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -50,9 +51,11 @@ __decorate([
     (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(JwtAuthGuard_1.JwtAuthGuard, RolesGuard_1.RolesGuard),
     (0, RolesDecorator_1.Role)('admin'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [prodDto_1.productDto]),
+    __metadata("design:paramtypes", [prodDto_1.productDto, Object]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "create", null);
 __decorate([
@@ -60,8 +63,9 @@ __decorate([
     __param(0, (0, common_1.Query)('minPrice')),
     __param(1, (0, common_1.Query)('maxPrice')),
     __param(2, (0, common_1.Query)('word')),
+    __param(3, (0, common_1.Query)('category')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String]),
+    __metadata("design:paramtypes", [Number, Number, String, String]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getAll", null);
 __decorate([

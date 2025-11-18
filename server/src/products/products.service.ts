@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Products } from './products.entity';
 import {
@@ -9,16 +13,29 @@ import {
   Repository,
 } from 'typeorm';
 import { productDto } from './dto/prodDto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Products) private prodRepo: Repository<Products>,
+    private readonly cloudServ: CloudinaryService,
   ) {}
 
-  async createProducr(dto: productDto) {
+  async createProducr(dto: productDto, file: Express.Multer.File) {
     try {
-      const product = this.prodRepo.create(dto);
+      const uploadResult: any = await this.cloudServ.uploadFile(
+        file,
+        'products',
+      );
+
+      if (!file) throw new BadRequestException('Image is required');
+
+      const product = this.prodRepo.create({
+        ...dto,
+        imageUrl: uploadResult.secure_url,
+        imagePublicId: uploadResult.public_id,
+      });
       return await this.prodRepo.save(product);
     } catch (e) {
       console.log(e);
@@ -26,7 +43,12 @@ export class ProductsService {
     }
   }
 
-  async getProducts(minPrice?: number, maxPrice?: number, word?: string) {
+  async getProducts(
+    minPrice?: number,
+    maxPrice?: number,
+    word?: string,
+    category?: string,
+  ) {
     let where: any = {};
 
     if (minPrice && maxPrice) where.price = Between(minPrice, maxPrice);
@@ -36,6 +58,8 @@ export class ProductsService {
     if (word) {
       where.name = ILike(`%${word}%`);
     }
+
+    if (category) where.category = category;
 
     return await this.prodRepo.find({ where, order: { price: 'DESC' } });
   }
@@ -62,5 +86,9 @@ export class ProductsService {
 
     await this.prodRepo.remove(product);
     return { message: `${product.name} deleted successfully` };
+  }
+
+  async delImg(id: string) {
+    return await this.cloudServ.deleteFile(id);
   }
 }

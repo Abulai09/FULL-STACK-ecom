@@ -18,6 +18,8 @@ let Products = class Products {
     name;
     price;
     category;
+    imageUrl;
+    imagePublicId;
     cartItems;
     orderItems;
 };
@@ -38,6 +40,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Products.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Products.prototype, "imageUrl", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Products.prototype, "imagePublicId", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => cartItems_entity_1.CartItems, (cartItems) => cartItems.products),
     __metadata("design:type", Array)

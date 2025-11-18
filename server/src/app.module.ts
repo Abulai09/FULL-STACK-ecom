@@ -13,6 +13,7 @@ import { SmsModule } from './sms/sms.module';
 import { ProductsModule } from './products/products.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -49,6 +50,8 @@ import { OrderModule } from './order/order.module';
     CartModule,
 
     OrderModule,
+
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

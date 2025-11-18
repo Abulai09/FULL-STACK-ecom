@@ -17,14 +17,24 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const products_entity_1 = require("./products.entity");
 const typeorm_2 = require("typeorm");
+const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 let ProductsService = class ProductsService {
     prodRepo;
-    constructor(prodRepo) {
+    cloudServ;
+    constructor(prodRepo, cloudServ) {
         this.prodRepo = prodRepo;
+        this.cloudServ = cloudServ;
     }
-    async createProducr(dto) {
+    async createProducr(dto, file) {
         try {
-            const product = this.prodRepo.create(dto);
+            const uploadResult = await this.cloudServ.uploadFile(file, 'products');
+            if (!file)
+                throw new common_1.BadRequestException('Image is required');
+            const product = this.prodRepo.create({
+                ...dto,
+                imageUrl: uploadResult.secure_url,
+                imagePublicId: uploadResult.public_id,
+            });
             return await this.prodRepo.save(product);
         }
         catch (e) {
@@ -32,7 +42,7 @@ let ProductsService = class ProductsService {
             throw e;
         }
     }
-    async getProducts(minPrice, maxPrice, word) {
+    async getProducts(minPrice, maxPrice, word, category) {
         let where = {};
         if (minPrice && maxPrice)
             where.price = (0, typeorm_2.Between)(minPrice, maxPrice);
@@ -43,6 +53,8 @@ let ProductsService = class ProductsService {
         if (word) {
             where.name = (0, typeorm_2.ILike)(`%${word}%`);
         }
+        if (category)
+            where.category = category;
         return await this.prodRepo.find({ where, order: { price: 'DESC' } });
     }
     async pagination(page, limit) {
@@ -72,6 +84,7 @@ exports.ProductsService = ProductsService;
 exports.ProductsService = ProductsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(products_entity_1.Products)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        cloudinary_service_1.CloudinaryService])
 ], ProductsService);
 //# sourceMappingURL=products.service.js.map

@@ -10,8 +10,8 @@ export declare class ProductsController {
         limit: number;
         totalPage: number;
     }>;
-    create(dto: productDto): Promise<void>;
-    getAll(minPrice?: number, maxPrice?: number, word?: string): Promise<import("./products.entity").Products[]>;
+    create(dto: productDto, file: Express.Multer.File): Promise<import("./products.entity").Products>;
+    getAll(minPrice?: number, maxPrice?: number, word?: string, category?: string): Promise<import("./products.entity").Products[]>;
     del(id: number): Promise<{
         message: string;
     }>;

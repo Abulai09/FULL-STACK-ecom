@@ -5,6 +5,8 @@ export declare class Products {
     name: string;
     price: number;
     category: string;
+    imageUrl: string;
+    imagePublicId: string;
     cartItems: CartItems[];
     orderItems: OrderItems[];
 }

@@ -16,6 +16,12 @@ export class Products {
   @Column()
   category: string;
 
+  @Column({ nullable: true })
+  imageUrl: string; // URL картинки для фронтенда
+
+  @Column({ nullable: true })
+  imagePublicId: string; // нужен для удаления с Cloudinary
+
   @OneToMany(() => CartItems, (cartItems) => cartItems.products)
   cartItems: CartItems[];
 

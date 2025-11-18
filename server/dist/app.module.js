@@ -22,6 +22,7 @@ const sms_module_1 = require("./sms/sms.module");
 const products_module_1 = require("./products/products.module");
 const cart_module_1 = require("./cart/cart.module");
 const order_module_1 = require("./order/order.module");
+const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -54,6 +55,7 @@ exports.AppModule = AppModule = __decorate([
             products_module_1.ProductsModule,
             cart_module_1.CartModule,
             order_module_1.OrderModule,
+            cloudinary_module_1.CloudinaryModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
